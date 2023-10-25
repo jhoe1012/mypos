@@ -4,5 +4,7 @@ export class Payment {
     selected: boolean;
     readonly: boolean;
     value: number;
+    total?: number; // LCABORNAY
+    change?: number; // LCABORNAY
     id?: number;
 }

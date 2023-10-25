@@ -821,6 +821,8 @@ class OrdersService
 
         $orderPayment->order_id = $order->id;
         $orderPayment->identifier = $payment['identifier'];
+        $orderPayment->change = $payment['change']; // LCABORNAY 
+        $orderPayment->total = $payment['total'];   // LCABORNAY
         $orderPayment->value = $this->currencyService->getRaw( $payment['value'] );
         $orderPayment->author = $order->author ?? Auth::id();
         $orderPayment->save();

@@ -114,6 +114,8 @@ export default {
                 identifier: 'account-payment',
                 selected: false,
                 label: this.label,
+                // total: this.order.total, // LCABORNAY
+                // change: this.order.total - value, // LCABORNAY
                 readonly: false,
             });
 

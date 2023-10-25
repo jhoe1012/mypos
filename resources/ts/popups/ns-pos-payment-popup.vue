@@ -104,7 +104,7 @@ export default {
                         resolve, reject
                     })
                 });
-
+                
                 this.select( this.paymentsType.filter( p => p.identifier === result[0].value )[0] );
             } catch( exception ) {
                 // not necessary to throw an error.

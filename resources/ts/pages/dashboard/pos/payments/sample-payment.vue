@@ -181,6 +181,8 @@ export default {
                                 identifier: this.identifier,
                                 selected: false,
                                 label: this.label,
+                                // total: this.order.total, // LCABORNAY
+                                // change: this.order.total - order.tendered, // LCABORNAY
                                 readonly: false,
                             });
                         }
@@ -210,6 +212,8 @@ export default {
                     identifier: this.identifier,
                     selected: false,
                     label: this.label,
+                    total: this.order.total, // LCABORNAY
+                    change: (parseFloat(this.order.tendered) + parseFloat(this.backValue / this.number)) - this.order.total, // LCABORNAY
                     readonly: false,
                 });
                 this.backValue     =   '0';
