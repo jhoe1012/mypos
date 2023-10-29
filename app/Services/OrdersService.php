@@ -2363,6 +2363,14 @@ class OrdersService
                 'icon' => '/images/groceries.png',
                 'selected' => false,
             ],
+             // LCABORNAY
+             'dinein' => [
+                'identifier' => 'dinein',
+                'label' => __( 'Dine In' ),
+                'icon' => '/images/dinein.png',
+                'selected' => false,
+            ],
+            // LCABORNAY
             'delivery' => [
                 'identifier' => 'delivery',
                 'label' => __( 'Delivery' ),

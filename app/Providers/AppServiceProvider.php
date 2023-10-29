@@ -220,7 +220,16 @@ class AppServiceProvider extends ServiceProvider
                 $app->make( BarcodeService::class ),
             );
         });
+        // LCABORNAY
 
+        Hook::addFilter('ns-page-title', function ($pageTitle) {
+            return __('%s &mdash; MyPOS');
+        });
+
+        Hook::addFilter( 'ns-footer-signature', function( $signature ) {
+            return __( 'You\'re using MyPOS 1.0.0' );
+        });     
+        // LCABORNAY
         /**
          * When the module has started,
          * we can load the configuration.
@@ -276,6 +285,14 @@ class AppServiceProvider extends ServiceProvider
                 'icon' => '/images/groceries.png',
                 'selected' => false,
             ],
+            // LCABORNAY
+            'dinein' => [
+                'identifier' => 'dinein',
+                'label' => __( 'Dine In' ),
+                'icon' => '/images/dinein.png',
+                'selected' => false,
+            ],
+            // LCABORNAY
             'delivery' => [
                 'identifier' => 'delivery',
                 'label' => __( 'Delivery' ),

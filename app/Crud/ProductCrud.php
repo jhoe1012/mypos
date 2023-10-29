@@ -298,6 +298,7 @@ class ProductCrud extends CrudService
                                         'materialized' => __( 'Materialized Product' ),
                                         'dematerialized' => __( 'Dematerialized Product' ),
                                         'grouped' => __( 'Grouped Product' ),
+                                        'rawmats' => __('Raw Materials'), //LCABORNAY
                                     ] ) ),
                                     'description' => __( 'Define the product type. Applies to all variations.' ),
                                     'name' => 'type',
