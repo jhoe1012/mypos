@@ -2872,14 +2872,14 @@ class OrdersService
             ->whereRelation('order', 'payment_status', Order::PAYMENT_PAID)
             ->get();
 
-        $total = $payments->map( fn( $payment ) => $payment->value )->sum();
+        $total = $payments->map( fn( $payment ) => $payment->value - ( $payment->change > 0  ? $payment->change : 0 ) )->sum(); // LCABORNAY
 
         return [
             'summary' => $paymentTypes->map( function ( $paymentType ) use ( $payments ) {
                 $total = $payments
                     ->filter( fn( $payment ) => $payment->identifier === $paymentType->identifier )
-                    ->map( fn( $payment ) => $payment->value )
-                    ->sum();
+                    ->map( fn( $payment ) => $payment->value - ( $payment->change > 0  ? $payment->change : 0 ) ) // LCABORNAY
+                    ->sum(); 
 
                 return [
                     'label' => $paymentType->label,
