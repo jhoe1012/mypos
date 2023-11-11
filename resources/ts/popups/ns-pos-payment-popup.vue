@@ -198,6 +198,9 @@ export default {
                             </li>
                             <li :key="index" v-for="(payment,index) of order.payments" class="p-2 flex justify-between mb-2 items-center">
                                 <span>{{ payment.label}}</span>
+                                <div class="flex items-left">
+                                    <span>{{ __("Reference: ") }} {{ payment.reference }}</span>
+                                </div>
                                 <div class="flex items-center">
                                     <span>{{ payment.value | currency }}</span>
                                     <button @click="deletePayment( payment )" class="rounded-full  h-8 w-8 flex items-center justify-center ml-2">

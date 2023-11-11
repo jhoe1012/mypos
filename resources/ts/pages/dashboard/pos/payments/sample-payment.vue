@@ -18,7 +18,11 @@
                     <span>{{ __( 'Change' ) }} : </span>
                     <span>{{ order.change | currency }}</span>
                 </div>
-                <div id="change" class="col-span-2 h-16 flex justify-between items-center elevation-surface border text-xl md:text-3xl p-2">
+                <div id="reference" @click="toggleReference()" class="cursor-pointer h-16 flex justify-between items-center elevation-surface border  error text-xl md:text-3xl p-2">
+                    <span>{{ __( 'Reference No. ' ) }} : </span>
+                    <span>{{ reference }}</span> <!-- LCABORNAY -->
+                </div>
+                <div id="screen" class="h-16 flex justify-between items-center elevation-surface border text-xl md:text-3xl p-2">
                     <span>{{ __( 'Screen' ) }} : </span>
                     <span>{{ backValue / number | currency }}</span>
                 </div>
@@ -60,6 +64,7 @@
 <script>
 import { Popup } from '@/libraries/popup';
 import nsPosDiscountPopupVue from '@/popups/ns-pos-discount-popup.vue';
+import nsPosReferencePopupVue from '@/popups/ns-pos-reference-popup.vue'; // LCABORNAY
 import nsPosConfirmPopupVue from '@/popups/ns-pos-confirm-popup.vue';
 import { __ } from '@/libraries/lang';
 import { nsSnackBar } from '@/bootstrap';
@@ -86,7 +91,8 @@ export default {
                 ...([4,5,6].map( key => ({ identifier: key, value: key }))),
                 ...([1,2,3].map( key => ({ identifier: key, value: key }))),
                 ...[{ identifier: 'backspace', icon : 'la-backspace' },{ identifier: 0, value: 0 }, { identifier: 'next', icon: 'la-share' }],
-            ]
+            ],
+            reference: '', // LCABORNAY
         }
     },
     computed: {
@@ -114,16 +120,19 @@ export default {
         nsHotPress
             .create( 'numpad-keys' )
             .whenVisible([ '.is-popup' ])
+            .whenNotVisible(['#reference-popup']) // LCABORNAY
             .whenPressed( numbers, ( event, value ) => { this.inputValue({ value: value }); })
 
         nsHotPress
             .create( 'numpad-backspace' )
             .whenVisible([ '.is-popup' ])
+            .whenNotVisible(['#reference-popup']) // LCABORNAY
             .whenPressed( 'backspace', () => this.inputValue({ identifier: 'backspace' }))
 
         nsHotPress
             .create( 'numpad-save' )
             .whenVisible([ '.is-popup' ])
+            .whenNotVisible(['#reference-popup']) // LCABORNAY
             .whenPressed( 'enter', () => {
                 /**
                  * if the actual amount on the screen is "0",
@@ -136,7 +145,7 @@ export default {
                 } else {
                     this.inputValue({ identifier: 'next' });
                 }
-            })
+            }) 
     },
     beforeDestroy() {
         nsHotPress.destroy( 'numpad-keys' );
@@ -161,6 +170,15 @@ export default {
                 return nsSnackBar.error( __( `You're not allowed to add a discount on the cart.` ) ).subscribe();
             }
         },
+        // LCABORNAY
+        toggleReference() {
+                Popup.show( nsPosReferencePopupVue, {
+                    onSubmit : ( response ) => {
+                        this.reference = response.reference
+                    }
+                });
+        },
+        // LCABORNAY
         makeFullPayment() {
             Popup.show( nsPosConfirmPopupVue, {
                 title: __( 'Confirm Full Payment' ),
@@ -211,17 +229,22 @@ export default {
                     identifier: this.identifier,
                     selected: false,
                     label: this.label,
-                    total: this.order.total, // LCABORNAY
-                    change: (parseFloat(this.order.tendered) + parseFloat(this.backValue / this.number)) - this.order.total, // LCABORNAY
+                    // LCABORNAY
+                    total: this.order.total, 
+                    change: (parseFloat(this.order.tendered) + parseFloat(this.backValue / this.number)) - this.order.total, 
+                    reference: this.reference,
+                    // LCABORNAY
                     readonly: false,
                 });
-                this.backValue     =   '0';
+                this.backValue = '0';
+                this.reference = '' ;
             } else if ( key.identifier === 'backspace' ) {
                 if ( this.allSelected ) {
                     this.backValue      =   '0';
                     this.allSelected    =   false;
                 } else {
-                    this.backValue      =   this.backValue.substr( 1 );
+                    // this.backValue      =   this.backValue.substr( 1 ); // LCABORNAY 
+                    this.backValue      =   this.backValue.substr(0, this.backValue.length - 1 ) || 0; // LCABORNAY 
                 }
             } else if ( key.value.toString().match( /^\d+$/ ) ) {
                 if ( this.allSelected ) {

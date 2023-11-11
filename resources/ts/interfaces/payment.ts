@@ -6,5 +6,6 @@ export class Payment {
     value: number;
     total?: number; // LCABORNAY
     change?: number; // LCABORNAY
+    reference?: string; // LCABORNAY
     id?: number;
 }

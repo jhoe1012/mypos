@@ -1,7 +1,7 @@
-APP_NAME=MuyPos
-APP_ENV=local
+APP_NAME=MyPos
+APP_ENV=production
 APP_KEY=base64:VDsErbfIWwq4qk//wZYruS1TzWOkScBb+IoIPJ34C8g=
-APP_DEBUG=true
+APP_DEBUG=false
 APP_URL=http://mypos.test
 
 LOG_CHANNEL=stack

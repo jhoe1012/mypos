@@ -20,6 +20,9 @@ return new class extends Migration
             if (!Schema::hasColumn('nexopos_orders_payments', 'change')) {
                 $table->float('change')->default(0);
             }
+            if (!Schema::hasColumn('nexopos_orders_payments', 'reference')) {
+                $table->text('reference')->nullable();
+            }
         });
     }
 
@@ -36,6 +39,9 @@ return new class extends Migration
             }
             if (Schema::hasColumn('nexopos_orders_payments', 'change')) {
                 $table->dropColumn('change');
+            }
+            if (Schema::hasColumn('nexopos_orders_payments', 'reference')) {
+                $table->dropColumn('reference');
             }
         });
     }
