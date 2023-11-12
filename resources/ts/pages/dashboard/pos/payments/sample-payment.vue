@@ -199,7 +199,8 @@ export default {
                                 identifier: this.identifier,
                                 selected: false,
                                 label: this.label,
-                                total: this.order.total, // LCABORNAYS
+                                total: this.order.total, // LCABORNAY
+                                reference: this.reference, // LCABORNAY
                                 readonly: false,
                             });
                         }

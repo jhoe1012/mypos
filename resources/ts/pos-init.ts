@@ -1,24 +1,24 @@
+import * as math from "mathjs";
+import moment from "moment";
+import { BehaviorSubject } from "rxjs";
+import Vue from 'vue';
+import { nsEvent, nsHooks, nsHttpClient, nsSnackBar } from "./bootstrap";
+import { nsRawCurrency } from "./filters/currency";
+import { Customer } from "./interfaces/customer";
+import { Order } from "./interfaces/order";
+import { OrderProduct } from "./interfaces/order-product";
+import { OrderType } from "./interfaces/order-type";
+import { Payment } from "./interfaces/payment";
+import { PaymentType } from "./interfaces/payment-type";
+import { ProductUnitQuantity } from "./interfaces/product-unit-quantity";
+import { __ } from "./libraries/lang";
+import { Popup } from "./libraries/popup";
+import Print from "./libraries/print";
+import { Responsive } from "./libraries/responsive";
+import Tax from "./libraries/tax";
 import { ProductQuantityPromise } from "./pages/dashboard/pos/queues/products/product-quantity";
 import { ProductUnitPromise } from "./pages/dashboard/pos/queues/products/product-unit";
-import { BehaviorSubject } from "rxjs";
-import { Customer } from "./interfaces/customer";
-import { OrderType } from "./interfaces/order-type";
-import Vue from 'vue';
-import { Order } from "./interfaces/order";
-import { nsEvent, nsHooks, nsHttpClient, nsSnackBar } from "./bootstrap";
-import { PaymentType } from "./interfaces/payment-type";
-import { Payment } from "./interfaces/payment";
-import { Responsive } from "./libraries/responsive";
-import { Popup } from "./libraries/popup";
-import { OrderProduct } from "./interfaces/order-product";
 import { StatusResponse } from "./status-response";
-import { __ } from "./libraries/lang";
-import { ProductUnitQuantity } from "./interfaces/product-unit-quantity";
-import { nsRawCurrency } from "./filters/currency";
-import moment from "moment";
-import Print from "./libraries/print";
-import Tax from "./libraries/tax";
-import * as math from "mathjs"
 
 
 /**
@@ -69,6 +69,7 @@ export class POS {
             discount: 0,
             register_id: this.get('register') ? this.get('register').id : undefined, // everytime it reset, this value will be pulled.
             discount_percentage: 0,
+            discount_manager: '', // LCABORNAY
             subtotal: 0,
             total: 0,
             coupons: [],

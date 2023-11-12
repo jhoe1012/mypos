@@ -1092,6 +1092,7 @@ class OrdersService
             $orderProduct->discount_type = $product[ 'discount_type' ] ?? 'none';
             $orderProduct->discount = $product[ 'discount' ] ?? 0;
             $orderProduct->discount_percentage = $product[ 'discount_percentage' ] ?? 0;
+            $orderProduct->discount_manager = $product[ 'discount_manager' ] ?? null; // LCABORNAY
             $orderProduct->total_purchase_price = $this->currencyService->define(
                     $product[ 'total_purchase_price' ] ?? Currency::fresh( $this->productService->getLastPurchasePrice( $product[ 'product' ] ) )
                         ->multipliedBy( $product[ 'quantity' ] )
@@ -1472,6 +1473,7 @@ class OrdersService
         $order->discount_type = $fields['discount_type'] ?? null;
         $order->discount_percentage = $this->currencyService->getRaw( $fields['discount_percentage'] ?? 0 );
         $order->discount = $this->currencyService->getRaw( $fields['discount'] ?? 0 ) ?: $this->computeOrderDiscount( $order, $fields );
+        $order->discount_manager =  $fields['discount_manager'] ?? null ; // LCABORNAY
         $order->total = $this->currencyService->getRaw( $fields[ 'total' ] ?? 0 ) ?: $this->computeTotal( $fields, $order );
         $order->type = $fields['type']['identifier'];
         $order->final_payment_date = isset( $fields['final_payment_date' ] ) ? Carbon::parse( $fields['final_payment_date' ] )->format( 'Y-m-d h:m:s' ) : null; // when the order is not saved as laid away

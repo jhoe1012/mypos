@@ -9,6 +9,7 @@ export interface Order {
     discount_type: 'flat' | 'percentage';
     discount: number;
     discount_percentage: number;
+    discount_manager: string | undefined; // LCABORNAY
     register_id: number | undefined;
     total: number;
     tendered: number;

@@ -34,6 +34,7 @@
 </template>
 <script>
 import { __ } from '@/libraries/lang';
+import nsManagerAuth from '@/popups/ns-pos-manager-auth.vue'
 export default {
     name: 'ns-pos-discount-popup',
     data() {
@@ -79,14 +80,25 @@ export default {
             this.$popup.close();
         },
 
-        inputValue( key ) {
-            if ( key.identifier === 'next' ) {
-                this.$popupParams.onSubmit({
-                    discount_type           :   this.mode,
-                    discount_percentage     :   this.mode === 'percentage' ? this.finalValue : undefined,
-                    discount                :   this.mode === 'flat' ? this.finalValue : undefined
-                });
-                this.$popup.close();
+        async inputValue( key ) {
+            if (key.identifier === 'next') {
+                try {
+                    const response = await new Promise((resolve, reject) => {
+                        Popup.show(nsManagerAuth, { resolve, reject });
+                    });
+
+                    if (response.status === 'success') {
+                        this.$popupParams.onSubmit({
+                            discount_type       : this.mode,
+                            discount_percentage : this.mode === 'percentage' ? this.finalValue : undefined,
+                            discount            : this.mode === 'flat' ? this.finalValue : undefined,
+                            discount_manager    : response.username,
+                        });
+                        this.$popup.close();
+                    }
+                } catch (exception) {
+
+                }
             } else if ( key.identifier === 'backspace' ) {
                 if ( this.allSelected ) {
                     this.finalValue     =   0;

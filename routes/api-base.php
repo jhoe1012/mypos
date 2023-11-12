@@ -37,6 +37,7 @@ Route::prefix( 'nexopos/v4' )->group( function () {
             include dirname( __FILE__ ) . '/api/forms.php';
             include dirname( __FILE__ ) . '/api/units.php';
             include dirname( __FILE__ ) . '/api/users.php';
+            include dirname( __FILE__ ) . '/api/manager_auth.php';
         });
     });
 
