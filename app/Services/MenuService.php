@@ -380,6 +380,12 @@ class MenuService
                         'permissions' => [ 'nexopos.reports.low-stock' ],
                         'href' => ns()->url( '/dashboard/reports/low-stock' ),
                     ],
+                    // lcabornay
+                    'inventory-report' => [
+                        'label' => __( 'Inventory Report' ),
+                        // 'permissions' => [ 'nexopos.reports.low-stock' ],
+                        'href' => ns()->url( '/dashboard/reports/inventory-report' ),
+                    ],
                     'sold-stock' => [
                         'label' => __( 'Sold Stock' ),
                         'href' => ns()->url( '/dashboard/reports/sold-stock' ),

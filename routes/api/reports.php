@@ -15,3 +15,5 @@ Route::get( 'reports/cashier-report', [ ReportsController::class, 'getMyReport' 
 Route::get( 'reports/low-stock', [ ReportsController::class, 'getLowStock' ]);
 Route::get( 'reports/stock-report', [ ReportsController::class, 'getStockReport' ]);
 Route::post( 'reports/customers-statement/{customer}', [ ReportsController::class, 'getCustomerStatement' ]);
+// LCABORNAY
+Route::post( 'reports/inventory-report', [ ReportsController::class, 'getInventoryReport' ]); 

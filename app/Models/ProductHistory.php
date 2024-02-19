@@ -40,6 +40,12 @@ class ProductHistory extends NsModel
 
     const ACTION_ADJUSTMENT_SALE = 'sale-adjustment';
 
+    // LCABORNAY
+    const ACTION_CONSUMED = 'consumed';
+    const ACTION_SPOILAGED = 'spoilaged';
+
+
+
     /**
      * actions that reduce stock
      */
@@ -51,6 +57,8 @@ class ProductHistory extends NsModel
         ProductHistory::ACTION_LOST,
         ProductHistory::ACTION_ADJUSTMENT_SALE,
         ProductHistory::ACTION_DELETED,
+        ProductHistory::ACTION_CONSUMED, // LCABORNAY
+        ProductHistory::ACTION_SPOILAGED, // LCABORNAY
     ];
 
     /**

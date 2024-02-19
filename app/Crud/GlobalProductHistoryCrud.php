@@ -417,6 +417,11 @@ class GlobalProductHistoryCrud extends CrudService
                 break;
             case ProductHistory::ACTION_VOID_RETURN: $entry->operation_type = __( 'Void Return' );
                 break;
+            //LCABORNAY
+            case ProductHistory::ACTION_CONSUMED: $entry->operation_type = __( 'Consumed' );
+                break;
+            case ProductHistory::ACTION_SPOILAGED: $entry->operation_type = __( 'Spoilage' );
+                break;
         }
 
         // you can make changes here

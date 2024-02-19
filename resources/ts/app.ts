@@ -2,9 +2,6 @@ import Vue from 'vue';
 import * as baseComponents from './components/components';
 
 
-import {
-    nsCurrency
-}   from './filters/declarations';
 
 /**
  * Will bootstrap time and 
@@ -25,6 +22,7 @@ const nsNotifications      =  () => import( './pages/dashboard/ns-notifications.
 const nsMedia              =  () => import( './pages/dashboard/ns-media.vue' );
 const nsLowStockReport     =  () => import( './pages/dashboard/reports/ns-low-stock-report.vue' );
 const nsSaleReport         =  () => import( './pages/dashboard/reports/ns-sale-report.vue' );
+const nsInventoryReport    =  () => import( './pages/dashboard/reports/ns-inventory-report.vue' ); // LCABORNAY
 const nsSoldStockReport    =  () => import( './pages/dashboard/reports/ns-sold-stock-report.vue' );
 const nsProfitReport       =  () => import( './pages/dashboard/reports/ns-profit-report.vue' );
 const nsCashFlowReport     =  () => import( './pages/dashboard/reports/ns-cash-flow-report.vue' );
@@ -44,8 +42,8 @@ const nsAlertPopup         =  () => import( './popups/ns-alert-popup.vue' );
 const nsConfirmPopup       =  () => import( './popups/ns-pos-confirm-popup.vue' );
 const nsPOSLoadingPopup    =  () => import( './popups/ns-pos-loading-popup.vue' );
 
-import RawVueApexCharts     from 'vue-apexcharts';
-import VueHtmlToPaper       from 'vue-html-to-paper';
+import RawVueApexCharts from 'vue-apexcharts';
+import VueHtmlToPaper from 'vue-html-to-paper';
 import { NsHotPress } from './libraries/ns-hotpress';
 
 const nsState               =   window[ 'nsState' ];
@@ -93,6 +91,7 @@ const allComponents    =   Object.assign({
     nsNotifications,
 
     nsSaleReport,
+    nsInventoryReport, //LCABORNAY
     nsSoldStockReport,
     nsProfitReport,
     nsCashFlowReport,

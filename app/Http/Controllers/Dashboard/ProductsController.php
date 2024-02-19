@@ -442,6 +442,8 @@ class ProductsController extends DashboardController
             'title' => __( 'Stock Adjustment' ),
             'description' => __( 'Adjust stock of existing products.' ),
             'actions' => Helper::kvToJsOptions([
+                ProductHistory::ACTION_CONSUMED => __( 'Consumption' ), // LCABORNAY
+                ProductHistory::ACTION_SPOILAGED => __( 'Spoilage' ), // LCABORNAY
                 ProductHistory::ACTION_ADDED => __( 'Add' ),
                 ProductHistory::ACTION_DELETED => __( 'Delete' ),
                 ProductHistory::ACTION_DEFECTIVE => __( 'Defective' ),

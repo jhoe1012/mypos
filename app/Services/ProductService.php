@@ -1110,6 +1110,8 @@ class ProductService
             ProductHistory::ACTION_VOID_RETURN,
             ProductHistory::ACTION_ADJUSTMENT_RETURN,
             ProductHistory::ACTION_ADJUSTMENT_SALE,
+            ProductHistory::ACTION_CONSUMED, // LCABORNAY
+            ProductHistory::ACTION_SPOILAGED, // LCABORNAY
         ]) ) {
             throw new NotAllowedException( __( 'The action is not an allowed operation.' ) );
         }

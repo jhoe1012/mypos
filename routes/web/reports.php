@@ -12,3 +12,6 @@ Route::get( '/reports/cash-flow', [ ReportsController::class, 'cashFlow' ])->nam
 Route::get( '/reports/annual-report', [ ReportsController::class, 'annualReport' ])->name( ns()->routeName( 'ns.dashboard.reports-annual' ) ); // @todo update
 Route::get( '/reports/payment-types', [ ReportsController::class, 'salesByPaymentTypes' ])->name( ns()->routeName( 'ns.dashboard.reports.payment-types' ) );
 Route::get( '/reports/customers-statement', [ ReportsController::class, 'showCustomerStatement' ])->name( ns()->routeName( 'ns.dashboard.reports.customers-statement' ) );
+
+//lcabornay
+Route::get( '/reports/inventory-report', [ ReportsController::class, 'inventoryReport' ])->name( ns()->routeName( 'ns.dashboard.inventory-report' ) ); 
