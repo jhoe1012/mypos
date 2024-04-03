@@ -298,7 +298,8 @@ class ProductCrud extends CrudService
                                         'materialized' => __( 'Materialized Product' ),
                                         'dematerialized' => __( 'Dematerialized Product' ),
                                         'grouped' => __( 'Grouped Product' ),
-                                        'rawmats' => __('Raw Materials'), //LCABORNAY
+                                        // 'rawmats' => __('Raw Material'), //LCABORNAY
+                                        // 'sellable' => __('Sellable'), //LCABORNAY
                                     ] ) ),
                                     'description' => __( 'Define the product type. Applies to all variations.' ),
                                     'name' => 'type',
@@ -702,6 +703,8 @@ class ProductCrud extends CrudService
             'materialized' => __( 'Materialized' ),
             'dematerialized' => __( 'Dematerialized' ),
             'grouped' => __( 'Grouped' ),
+            'rawmats' => __('Raw Material'), //LCABORNAY
+            'sellable' => __('Sellable'), //LCABORNAY
             default => sprintf( __( 'Unknown Type: %s' ), $entry->type ),
         };
 

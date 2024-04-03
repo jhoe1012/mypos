@@ -18,11 +18,24 @@ export default {
         }
     },
     mounted() {
-        console.log( this.actions );
+        // console.log( this.actions );
+        this.getAllProduct();
     },
     methods: {
         __,
-
+        getAllProduct() {
+            let argument = " ";
+            nsHttpClient.post('/api/nexopos/v4/procurements/products/search-procurement-product', { argument })
+                .subscribe(result => {
+                    if (result.from === 'products') {
+                        if (result.products.length > 0) {
+                            for (let i = 0; i < result.products.length; i++) {
+                                this.addSuggestion(result.products[i]);
+                            }
+                        }
+                    }
+                })
+        },
         searchProduct( argument ) {
             if ( argument.length > 0 ) {
                 nsHttpClient.post( '/api/nexopos/v4/procurements/products/search-procurement-product', { argument })
