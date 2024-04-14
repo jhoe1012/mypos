@@ -70,12 +70,13 @@
                                 <table class="table ns-table">
                                     <thead class="text-primary">
                                         <tr>
-                                            <th rowspan="2" class="border p-2 text-left w-20" >{{ __('Products') }}</th>
+                                            <th rowspan="2" class="border p-2 text-left w-20">{{ __('Products') }}</th>
                                             <th rowspan="2" class="border p-2">{{ __('UOM') }}</th>
                                             <template v-for="(invDate, invDateIndex) of summary">
                                                 <th colspan="5" class="border p-2">@{{ invDate }}</th>
 
                                             </template>
+                                            <th colspan="5" class="border p-2">{{ __('Total') }}</th>
                                         </tr>
                                         <tr>
                                             <template v-for="(invDate, invDateIndex) of summary">
@@ -86,6 +87,11 @@
                                                 <th class="border p-2">{{ __('END') }}</th>
 
                                             </template>
+                                            <th class="border p-2">{{ __('BEG') }}</th>
+                                            <th class="border p-2">{{ __('IN') }}</th>
+                                            <th class="border p-2">{{ __('CONSUMPTION/SOLD') }}</th>
+                                            <th class="border p-2">{{ __('TRIMMINGS/SPOILAGE') }}</th>
+                                            <th class="border p-2">{{ __('END') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-primary bg-white">
@@ -95,20 +101,29 @@
 
                                             <template v-for="(product, productIndex) of result['inventory_dates']">
                                                 <td class="p-2 border text-right">@{{ product['begin_qty'] }}</td>
-                                                <td class="p-2 border text-right">@{{ product['added'] }}</td>
-                                                <td class="p-2 border text-right">@{{ product['consumed'] }}</td>
-                                                <td class="p-2 border text-right">@{{ product['spoilaged'] }}</td>
+                                                <td class="p-2 border text-right">@{{ product['in_qty'] }}</td>
+                                                <td class="p-2 border text-right">@{{ product['sold_qty'] }}</td>
+                                                <td class="p-2 border text-right">@{{ product['spoilage_qty'] }}</td>
                                                 <td class="p-2 border text-right">@{{ product['end_qty'] }}</td>
                                             </template>
+                                            <td class="p-2 border text-right">@{{ result['total_begin_qty'] }}</td>
+                                            <td class="p-2 border text-right">@{{ result['total_in_qty'] }}</td>
+                                            <td class="p-2 border text-right">@{{ result['total_sold_qty'] }}</td>
+                                            <td class="p-2 border text-right">@{{ result['total_spoilage_qty'] }}</td>
+                                            <td class="p-2 border text-right">@{{ result['total_end_qty'] }}</td>
                                         </tr>
                                     </tbody>
                                     <tfoot class="text-primary font-semibold">
                                         <tr>
-                                            {{-- <td class="p-2 border text-primary"></td>
-                                            <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'quantity') }}</td>
-                                            <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'discount') | currency }}</td>
-                                            <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'tax_value') | currency }}</td>
-                                            <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'total_price') | currency }}</td> --}}
+
+                                            {{-- <td class="p-2 border text-right" colspan="2"></td>
+                                            <template v-for="(product, productIndex) of result['inventory_dates']">
+                                                <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'begin_qty') }}</td>
+                                                <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'in_qty') }}</td>
+                                                <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'sold_qty') }}</td>
+                                                <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'spoilage_qty') }}</td>
+                                                <td class="p-2 border text-right text-primary">@{{ computeTotal(result, 'end_qty') }}</td>
+                                            </template> --}}
                                         </tr>
                                     </tfoot>
                                 </table>

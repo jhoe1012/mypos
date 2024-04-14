@@ -1136,16 +1136,83 @@ class ReportService
     }
 
     // LCABORNAY
-    public function getInventoryReport($startDate, $endDate)
+    public function endOfDay(string $inv_date)
     {
-        $products = ProductUnitQuantity::select('nexopos_products.name', 'nexopos_units.identifier')
-        ->join('nexopos_products', 'nexopos_products.id', 'nexopos_products_unit_quantities.product_id')
-        ->join('nexopos_units', 'nexopos_units.id', 'nexopos_products_unit_quantities.unit_id')
-        ->orderBy('nexopos_products.name')
-        ->orderBy('nexopos_units.identifier')
-        ->get();
 
-        $inventories = DB::select(
+        $NEWLINE = "\n";
+        $startDate = date('Y-m-d H:i:s', strtotime($inv_date . ' 00:00:00'));
+        $endDate = date('Y-m-d H:i:s', strtotime($inv_date . '+ 1439 minutes'));
+
+        $products = ProductUnitQuantity::select('nexopos_products.id as prod_id', 'nexopos_units.id as unit_id')
+            ->join('nexopos_products', 'nexopos_products.id', 'nexopos_products_unit_quantities.product_id')
+            ->join('nexopos_units', 'nexopos_units.id', 'nexopos_products_unit_quantities.unit_id')
+            ->orderBy('nexopos_products.name')
+            ->orderBy('nexopos_units.identifier')
+            ->get();
+
+        foreach ($products as $product) {
+            $inventories = $this->getInventory($startDate, $endDate, $product->prod_id, $product->unit_id);
+
+            if ($inventories) {
+                foreach ($inventories as $inventory) {
+                    $insert_inv = [
+                        'product_id' => $inventory->product_id,
+                        'unit_id' => $inventory->unit_id,
+                        'sku' => $inventory->sku,
+                        'product_name' => $inventory->name,
+                        'uom' => $inventory->identifier,
+                        'inv_date' => $inventory->created_at_date,
+                        'begin_qty' => $inventory->begin_qty,
+                        'in_qty' => $inventory->in_qty,
+                        'sold_qty' => $inventory->sold_qty,
+                        'spoilage_qty' => $inventory->spoilage_qty,
+                        'end_qty' => $inventory->end_qty,
+                        'created_at' => Carbon::now()->toDateTimeString()
+                    ];
+
+                    echo "\nCalculating inventory of {$inventory->name}......";
+                    DB::table('eod_inventories')->insert($insert_inv);
+                }
+            } else {
+                $startDate1  =  date('Y-m-d H:i:s', strtotime($startDate . ' - 1 day'));
+                $endDate1  = date('Y-m-d H:i:s', strtotime($endDate . ' - 1 day'));
+                $inventories = $this->getInventory($startDate1, $endDate1, $product->prod_id, $product->unit_id);
+            
+                if ($inventories) {
+                    foreach ($inventories as $inventory) {
+                        $insert_inv = [
+                            'product_id' => $inventory->product_id,
+                            'unit_id' => $inventory->unit_id,
+                            'sku' => $inventory->sku,
+                            'product_name' => $inventory->name,
+                            'uom' => $inventory->identifier,
+                            'inv_date' => date('Y-m-d', strtotime($inventory->created_at_date . ' + 1 day')),
+                            'begin_qty' => $inventory->end_qty,
+                            'in_qty' => 0,
+                            'sold_qty' => 0,
+                            'spoilage_qty' => 0,
+                            'end_qty' => $inventory->end_qty,
+                            'created_at' => Carbon::now()->toDateTimeString()
+                        ];
+                        echo "\nCalculating inventory of {$inventory->name}......";
+                        DB::table('eod_inventories')->insert($insert_inv);
+                    }
+                } else {
+                    echo "\nCopy last date inv......";
+                    $startDate2  =  date('Y-m-d', strtotime($startDate . ' - 1 day'));
+                    $inv_date  =  date('Y-m-d', strtotime($startDate));
+                    $date_now = Carbon::now()->toDateTimeString();
+                    $test = DB::statement(" INSERT INTO public.eod_inventories (product_id,unit_id,sku,product_name,uom,inv_date,begin_qty,in_qty,sold_qty,spoilage_qty,end_qty,created_at)
+                                            SELECT product_id,unit_id,sku,product_name,uom,'{$inv_date}',begin_qty,in_qty,sold_qty,spoilage_qty,end_qty,'{$date_now}'  
+                                            FROM eod_inventories 
+                                            WHERE product_id = {$product->prod_id}  AND unit_id ={$product->unit_id} AND inv_date ='{$startDate2}'");
+                }
+            }
+        }
+    }
+    public function getInventory(string $startDate, string $endDate, int $product_id, int $unit_id)
+    {
+        return  DB::select(
             DB::raw("WITH products_histories AS (
                     SELECT
                         *
@@ -1154,28 +1221,32 @@ class ReportService
                         nexopos_products_histories
                     WHERE
                         created_at >= :start_date
-                        AND created_at <= :end_date )
+                        AND created_at <= :end_date 
+                        AND product_id = :product_id
+                        AND unit_id = :unit_id )
                     SELECT
-                        item.name
+                   		  item.sku
+                        , item.name
                         , inv.product_id
-                        , inv.unit_id
+                        , inv.unit_id 
                         , uom.identifier
                         , SUM(CASE WHEN inv.operation_type = 'sold' 
                                     OR inv.operation_type = 'consumed' 
                                 THEN inv.quantity 
-                                ELSE 0 END ) AS consumed
+                                ELSE 0 END ) AS sold_qty
                         , SUM(CASE WHEN inv.operation_type = 'spoilaged' 
                                     OR inv.operation_type = 'lost' 
-                                    OR inv.operation_type = 'defective' 
+                                    OR inv.operation_type = 'defective'
+                                    OR inv.operation_type = 'deleted'
                                 THEN inv.quantity 
-                                ELSE 0 END ) AS spoilaged
+                                ELSE 0 END ) AS spoilage_qty
                         , SUM(CASE WHEN inv.operation_type = 'procured' 
                                     OR inv.operation_type = 'added' 
                                 THEN inv.quantity 
-                                ELSE 0 END ) AS added
-                        , (
+                                ELSE 0 END ) AS in_qty
+                        , COALESCE( (
                             SELECT 
-                                COALESCE(after_quantity, 0)
+                               COALESCE(after_quantity,0)
                             FROM
                                 nexopos_products_histories
                             WHERE
@@ -1185,14 +1256,14 @@ class ReportService
                             ORDER BY
                                 created_at DESC
                             LIMIT 1
-                        ) AS begin_qty
+                        ), 0 )AS begin_qty
                         , (
                             SELECT 
                                 COALESCE(after_quantity,0)
                             FROM
                                 nexopos_products_histories
                             WHERE
-                                date(created_at) = inv.created_at_date
+                                  created_at  BETWEEN inv.created_at_date AND  inv.created_at_date + INTERVAL '1 day'
                                 AND product_id = inv.product_id
                                 AND unit_id = inv.unit_id
                             ORDER BY
@@ -1208,17 +1279,37 @@ class ReportService
                         uom.id = inv.unit_id
                     WHERE
                         inv.created_at >= :start_date
-                        AND  inv.created_at <= :end_date
+                        AND inv.created_at <= :end_date
+                        AND inv.product_id = :product_id
+                        AND inv.unit_id = :unit_id
                     GROUP BY
-                        item.name
+                    	 item.sku
+                        ,item.name
                         , inv.created_at_date
                         , uom.identifier
                         , inv.product_id
-                        , inv.unit_id
-                    ORDER BY 
-                        item.name
-                        , uom.identifier
-                        , inv.created_at_date"),
+                        , inv.unit_id"),
+            array(
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'product_id' => $product_id,
+                'unit_id' => $unit_id
+            )
+        );
+    }
+
+
+    public function getInventoryReport($startDate, $endDate)
+    {
+        $products = ProductUnitQuantity::select('unit_id' , 'product_id', 'nexopos_products.sku', 'nexopos_products.name', 'nexopos_units.identifier')
+            ->join('nexopos_products', 'nexopos_products.id', 'nexopos_products_unit_quantities.product_id')
+            ->join('nexopos_units', 'nexopos_units.id', 'nexopos_products_unit_quantities.unit_id')
+            ->orderBy('nexopos_products.name')
+            ->orderBy('nexopos_units.identifier')
+            ->get();
+
+        $inventories = DB::select(
+            DB::raw(" SELECT * from eod_inventories where inv_date >= :start_date AND  inv_date <= :end_date"),
             array(
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -1236,43 +1327,77 @@ class ReportService
         }
 
         $data = [];
-               foreach($products as $product) {
-            $product_key = $product->name. $product->identifier;
+        foreach ($products as $product) {
+            
+            $product_key = $product->name . $product->identifier;
             $data[$product_key]["product"] = $product->name;
-                $data[$product_key]["uom"] = $product->identifier;
+            $data[$product_key]["uom"] = $product->identifier;
+           
+            $data[$product_key]["total_begin_qty"] = DB::table('eod_inventories')
+            ->where([
+                ['inv_date','=',  $startDate->format('Y-m-d')],
+                ['product_id','=', $product->product_id],
+                ['unit_id','=',$product->unit_id],
+            ])
+            ->pluck('begin_qty')
+            ->first();
+
+            $data[$product_key]["total_end_qty"] = DB::table('eod_inventories')
+            ->where([
+                ['inv_date','=',  $endDate->format('Y-m-d')],
+                ['product_id','=', $product->product_id],
+                ['unit_id','=',$product->unit_id],
+            ])
+            ->pluck('end_qty')
+            ->first();
+            $total_movement = DB::table('eod_inventories')
+            ->select(DB::raw('SUM(in_qty) as in_qty, SUM(sold_qty) as sold_qty, SUM(spoilage_qty) as spoilage_qty'))
+            ->where([
+                ['inv_date','>=',  $startDate->format('Y-m-d')],
+                ['inv_date','<=',  $endDate->format('Y-m-d')],
+                ['product_id','=', $product->product_id],
+                ['unit_id','=',$product->unit_id],
+            ])
+            ->get();
+            $data[$product_key]["total_in_qty"] = $total_movement[0]->in_qty;
+            $data[$product_key]["total_sold_qty"] = $total_movement[0]->sold_qty;
+            $data[$product_key]["total_spoilage_qty"] = $total_movement[0]->spoilage_qty;
             foreach ($periods as $period) {
                 $period_format = $period->format('Y-m-d');
-                                $data[$product_key]["inventory_dates"][$period_format] = $this->searchValue( $product_key,$period_format, $inventories );
+                $data[$product_key]["inventory_dates"][$period_format] = $this->searchValue($product_key, $period_format, $inventories);
+            }
         }
-    }
         return [
             'results' => $data,
             'summary' => $inventory_dates,
         ];
     }
 
-    public function searchValue($key, $date, $data){
-       $value =  [ "inventory_date" => $date,
-                        "begin_qty" => 0,
-                        "added" => 0,
-                        "consumed" => 0,
-                        "spoilaged" => 0,
-                        "end_qty" => 0,
-                    ];
+    public function searchValue($key, $date, $data)
+    {
+        $value =  [
+            "inv_date" => $date,
+            "begin_qty" => 0,
+            "in_qty" => 0,
+            "sold_qty" => 0,
+            "spoilage_qty" => 0,
+            "end_qty" => 0,
+        ];
 
-                    foreach($data as $line) {
-                        $line_key = $line->name . $line->identifier;
-                        if( $line_key == $key && $line->created_at_date == $date ){
-                            $value =  [ "inventory_date" => $date,
-                            "begin_qty" => ($line->begin_qty == null) ? 0 : $line->begin_qty,
-                        "added" => $line->added,
-                        "consumed" => $line->consumed,
-                        "spoilaged" => $line->spoilaged,
-                        "end_qty" => ($line->end_qty == null) ? 0 : $line->end_qty,
-                    ];
-                    return $value;
-                        }
-                    }
-                    return $value;
+        foreach ($data as $line) {
+            $line_key = $line->product_name . $line->uom;
+            if ($line_key == $key && $line->inv_date == $date) {
+                $value =  [
+                    "inv_date" => $date,
+                    "begin_qty" => ($line->begin_qty == null) ? 0 : $line->begin_qty,
+                    "in_qty" => $line->in_qty,
+                    "sold_qty" => $line->sold_qty,
+                    "spoilage_qty" => $line->spoilage_qty,
+                    "end_qty" => ($line->end_qty == null) ? 0 : $line->end_qty,
+                ];
+                return $value;
+            }
+        }
+        return $value;
     }
 }

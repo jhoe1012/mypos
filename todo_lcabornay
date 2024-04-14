@@ -11,3 +11,8 @@
 // TODO INPUT  NG STOCK MAKE MULTIPLE INPUT BOX
 // TODO ITEM CHECK MATERIALIZE / MATERIAL CATEGORY
 // TODO INVENTORY REPORT EXCEL DOWNLOAD 
+
+
+SELECT  nexopos_products.id,nexopos_units.id,nexopos_products.sku,nexopos_products.name,nexopos_units.identifier  FROM nexopos_products_unit_quantities
+INNER JOIN nexopos_products ON nexopos_products.id=nexopos_products_unit_quantities.product_id
+ INNER JOIN        nexopos_units ON nexopos_units.id =nexopos_products_unit_quantities.unit_id

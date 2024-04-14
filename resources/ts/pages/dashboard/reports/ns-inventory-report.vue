@@ -2,12 +2,11 @@
     
 </template>
 <script>
-import moment from "moment";
-import nsDatepicker from "@/components/ns-datepicker";
-import { default as nsDateTimePicker } from '@/components/ns-date-time-picker';
 import { nsHttpClient, nsSnackBar } from '@/bootstrap';
+import { default as nsDateTimePicker } from '@/components/ns-date-time-picker';
+import nsDatepicker from "@/components/ns-datepicker";
 import { __ } from '@/libraries/lang';
-import nsSelectPopupVue from '@/popups/ns-select-popup.vue';
+import moment from "moment";
 
 export default {
     name: 'ns-inventory-report',
@@ -18,36 +17,7 @@ export default {
             results: [],
             // users: [],
             summary: [],
-            // selectedUser: '',
-            // reportType: {
-            //     label: __( 'Report Type' ),
-            //     name: 'reportType',
-            //     type: 'select',
-            //     value: 'categories_report',
-            //     options: [
-            //         {
-            //             label: __( 'Categories Detailed' ),
-            //             name: 'categories_report',
-            //         }, {
-            //             label: __( 'Categories Summary' ),
-            //             name: 'categories_summary',
-            //         }, {
-            //             label: __( 'Products' ),
-            //             name: 'products_report',
-            //         }
-            //     ],
-            //     description: __( 'Allow you to choose the report type.' ),
-            // },
-            // filterUser: {
-            //     label: __( 'Filter User' ),
-            //     name: 'filterUser',
-            //     type: 'select',
-            //     value: '',
-            //     options: [
-            //         // ...
-            //     ],
-            //     description: __( 'Allow you to choose the report type.' ),
-            // },
+            
             field: {
                 type: 'datetimepicker',
                 value: '2021-02-07',
@@ -73,82 +43,7 @@ export default {
         setEndDate( moment ) {
             this.endDate    =   moment.format();
         },
-        // async openSettings() {
-        //     try {
-        //         const result    =   await new Promise( ( resolve, reject ) => {
-        //             Popup.show( nsSelectPopupVue, {
-        //                 ...this.reportType,
-        //                 resolve, 
-        //                 reject
-        //             });
-        //         });
-
-        //         this.reportType.value   =   result[0].name;
-        //         this.result             =   [];
-        //         this.loadReport();
-        //     } catch( exception ) {
-        //         // ...
-        //     }
-        // },
-
-        // async openUserFiltering() {
-        //     try {
-        //         /**
-        //          * let's try to pull the users first.
-        //          */
-        //         const result    =   await new Promise( ( resolve, reject ) => {
-        //             nsHttpClient.get( `/api/nexopos/v4/users` )
-        //                 .subscribe({
-        //                     next: (users) => {
-        //                         this.users      =   users;
-
-        //                         this.filterUser.options     =   [
-        //                             {
-        //                                 label: __( 'All Users' ),
-        //                                 value: ''
-        //                             },
-        //                             ...this.users.map( user => {
-        //                                 return {
-        //                                     label: user.username,
-        //                                     value: user.id
-        //                                 }
-        //                             })
-        //                         ];
-
-        //                         Popup.show( nsSelectPopupVue, {
-        //                             ...this.filterUser,
-        //                             resolve, 
-        //                             reject
-        //                         });
-        //                     },
-        //                     error: error => {
-        //                         nsSnackBar.error( __( 'No user was found for proceeding the filtering.' ) );
-        //                         reject( error );
-        //                     }
-        //                 });
-        //         });
-
-        //         this.selectedUser       =   result[0].label;
-        //         this.filterUser.value   =   result[0].value;
-        //         this.result             =   [];
-        //         this.loadReport();
-        //     } catch( exception ) {
-        //         // ...
-        //     }
-        // },
-
-        // getType( type ) {
-        //     const option    =   this.reportType.options.filter( option => {
-        //         return option.name === type;
-        //     });
-
-        //     if ( option.length > 0 ) {
-        //         return option[0].label;
-        //     }
-
-        //     return __( 'Unknown' );
-        // },
-
+        
         loadReport() {
             if ( this.startDate === null || this.endDate ===null ) {
                 return nsSnackBar.error( __( 'Unable to proceed. Select a correct time range.' ) ).subscribe();
