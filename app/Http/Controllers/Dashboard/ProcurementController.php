@@ -305,7 +305,8 @@ class ProcurementController extends DashboardController
                 ->orWhere( 'name', 'LIKE', "%{$request->input( 'argument' )}%" )
                 ->orWhere( 'barcode', 'LIKE', "%{$request->input( 'argument' )}%" );
             })
-            ->limit( 8 )
+            //->limit( 8 ) //lcabornay
+            ->orderBy("category_id", "asc") // lcabornay
             ->get()
             ->map( function ( $product ) {
                 $units = json_decode( $product->purchase_unit_ids );

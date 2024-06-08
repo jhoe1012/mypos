@@ -56,8 +56,8 @@
                                     <i class="las la-image text-6xl" v-if="! data.preview_url"></i>
                                 </div>
                                 <div class="h-0 w-full">
-                                    <div class="cell-item-label relative w-full flex items-center justify-center -top-10 h-20 py-2">
-                                        <h3 class="text-sm font-bold py-2 text-center">{{ data.name }}</h3>
+                                    <div class="cell-item-label bg-emerald-400 relative w-full flex items-center justify-center -top-10 h-20 py-2">
+                                        <h3 class="text-md font-bold py-2 text-center">{{ data.name }}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -76,8 +76,8 @@
                                     <i v-if="! data.galleries || data.galleries.filter( i => i.featured === true ).length === 0" class="las la-image text-6xl"></i>
                                 </div>
                                 <div class="h-0 w-full">
-                                    <div class="cell-item-label relative w-full flex flex-col items-center justify-center -top-10 h-20 p-2">
-                                        <h3 class="text-sm text-center w-full">{{ data.name }}</h3>
+                                    <div class="cell-item-label bg-emerald-400 relative w-full flex flex-col items-center justify-center -top-10 h-20 p-2">
+                                        <h3 class="text-md font-bold text-center w-full">{{ data.name }}</h3>
                                         <template v-if="options.ns_pos_price_with_tax === 'no'">
                                             <span class="text-sm" v-if="data.unit_quantities && data.unit_quantities.length === 1">
                                                 {{ data.unit_quantities[0].sale_price_without_tax | currency }}
@@ -99,10 +99,10 @@
     </div>
 </template>
 <script >
-import { nsHttpClient, nsSnackBar } from '../../../bootstrap'
+import { __ } from '@/libraries/lang';
 import switchTo from "@/libraries/pos-section-switch";
 import nsPosSearchProductVue from '@/popups/ns-pos-search-product.vue';
-import { __ } from '@/libraries/lang';
+import { nsHttpClient, nsSnackBar } from '../../../bootstrap';
 
 export default {
     name: 'ns-pos-grid',

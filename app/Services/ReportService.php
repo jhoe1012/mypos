@@ -1143,6 +1143,9 @@ class ReportService
         $startDate = date('Y-m-d H:i:s', strtotime($inv_date . ' 00:00:00'));
         $endDate = date('Y-m-d H:i:s', strtotime($inv_date . '+ 1439 minutes'));
 
+
+        DB::table('eod_inventories')->whereDate('inv_date', '=', $inv_date)->delete();
+
         $products = ProductUnitQuantity::select('nexopos_products.id as prod_id', 'nexopos_units.id as unit_id')
             ->join('nexopos_products', 'nexopos_products.id', 'nexopos_products_unit_quantities.product_id')
             ->join('nexopos_units', 'nexopos_units.id', 'nexopos_products_unit_quantities.unit_id')

@@ -191,6 +191,12 @@ class MenuService
                         'permissions' => [ 'nexopos.create.products' ],
                         'href' => ns()->url( '/dashboard/products/create' ),
                     ],
+                    // lcabornay
+                    'mass-upload-products' => [
+                        'label' => __( 'Upload Product'),
+                        'permissions' => [ 'nexopos.create.products' ],
+                        'href' => ns()->url( '/dashboard/products/mass-upload-product' ),
+                    ], // - end
                     'labels-printing' => [
                         'label' => __( 'Print Labels' ),
                         'href' => ns()->url( '/dashboard/products/print-labels' ),

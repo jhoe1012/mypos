@@ -1,10 +1,10 @@
 <script>
 import { nsHttpClient, nsSnackBar } from '@/bootstrap';
-import { Popup } from '@/libraries/popup';
-import nsProcurementQuantityVue from '@/popups/ns-procurement-quantity.vue';
-import nsPosConfirmPopupVue from '@/popups/ns-pos-confirm-popup.vue';
-import nsPromptPopupVue from '@/popups/ns-prompt-popup.vue';
 import { __ } from '@/libraries/lang';
+import { Popup } from '@/libraries/popup';
+import nsPosConfirmPopupVue from '@/popups/ns-pos-confirm-popup.vue';
+import nsProcurementQuantityVue from '@/popups/ns-procurement-quantity.vue';
+import nsPromptPopupVue from '@/popups/ns-prompt-popup.vue';
 import { forkJoin } from 'rxjs';
 export default {
     name: 'ns-stock-adjustment',
@@ -30,7 +30,7 @@ export default {
                     if (result.from === 'products') {
                         if (result.products.length > 0) {
                             for (let i = 0; i < result.products.length; i++) {
-                                this.addSuggestion(result.products[i]);
+                                this.addSuggestion(result.products[i]); 
                             }
                         }
                     }
@@ -102,7 +102,7 @@ export default {
             ]).subscribe( result => {
                     if ( result[0].length > 0 ) {
                         suggestion.quantities                       =   result[0];
-                        suggestion.adjust_quantity                  =   1;
+                        suggestion.adjust_quantity                  =   0;
                         suggestion.adjust_action                    =   '',
                         suggestion.adjust_reason                    =   '',
                         suggestion.adjust_unit                      =   '',
@@ -131,7 +131,8 @@ export default {
         },
         recalculateProduct( product ) {
             if ( product.adjust_unit !== '' ) {
-                if ([ 'deleted', 'defective', 'lost' ].includes( product.adjust_action ) ) {
+              //  if ([ 'deleted', 'defective', 'lost' , 'cons'].includes( product.adjust_action ) ) { // lcabornay
+                if ([ 'deleted', 'defective', 'lost' , 'consumed', 'spoilaged'].includes( product.adjust_action ) ) {
                     product.adjust_value        =   - ( product.adjust_quantity * product.adjust_unit.sale_price );
                 } else {
                     product.adjust_value        =   product.adjust_quantity * product.adjust_unit.sale_price;
@@ -270,7 +271,7 @@ export default {
                         <td class="p-2">
                             <div class="input-group border-2 info">
                                 <select @change="recalculateProduct( product )" v-model="product.adjust_unit" class="outline-none p-2 w-full">
-                                    <option :key="quantity.id" v-for="quantity of product.quantities" :value="quantity">{{ quantity.unit.name }}</option>
+                                    <option :key="quantity.id" v-for="quantity of product.quantities" :value="quantity"> {{ quantity.unit.name }}</option>
                                 </select>
                             </div>
                         </td>

@@ -70,8 +70,8 @@
                                 <table class="table ns-table">
                                     <thead class="text-primary">
                                         <tr>
-                                            <th rowspan="2" class="border p-2 text-left w-20">{{ __('Products') }}</th>
-                                            <th rowspan="2" class="border p-2">{{ __('UOM') }}</th>
+                                            <th rowspan="2" class="border p-2 text-left w-30 max-w-3O">{{ __('Products') }}</th>
+                                            <th rowspan="2" class="border p-2 w-10">{{ __('UOM') }}</th>
                                             <template v-for="(invDate, invDateIndex) of summary">
                                                 <th colspan="5" class="border p-2">@{{ invDate }}</th>
 
@@ -80,18 +80,18 @@
                                         </tr>
                                         <tr>
                                             <template v-for="(invDate, invDateIndex) of summary">
-                                                <th class="border p-2">{{ __('BEG') }}</th>
-                                                <th class="border p-2">{{ __('IN') }}</th>
-                                                <th class="border p-2">{{ __('CONSUMPTION/SOLD') }}</th>
-                                                <th class="border p-2">{{ __('TRIMMINGS/SPOILAGE') }}</th>
-                                                <th class="border p-2">{{ __('END') }}</th>
+                                                <th class="border p-2 w-5 max-w-5">{{ __('BEG') }}</th>
+                                                <th class="border p-2 w-5 max-w-5">{{ __('IN') }}</th>
+                                                <th class="border p-2 w-5 max-w-5">{{ __('CONSUMPTION/SOLD') }}</th>
+                                                <th class="border p-2 w-5 max-w-5">{{ __('TRIMMINGS/SPOILAGE') }}</th>
+                                                <th class="border p-2 w-5 max-w-5">{{ __('END') }}</th>
 
                                             </template>
-                                            <th class="border p-2">{{ __('BEG') }}</th>
-                                            <th class="border p-2">{{ __('IN') }}</th>
-                                            <th class="border p-2">{{ __('CONSUMPTION/SOLD') }}</th>
-                                            <th class="border p-2">{{ __('TRIMMINGS/SPOILAGE') }}</th>
-                                            <th class="border p-2">{{ __('END') }}</th>
+                                            <th class="border p-2 w-5 max-w-5">{{ __('BEG') }}</th>
+                                            <th class="border p-2 w-5 max-w-5">{{ __('IN') }}</th>
+                                            <th class="border p-2 w-5 max-w-5">{{ __('CONSUMPTION/SOLD') }}</th>
+                                            <th class="border p-2 w-5 max-w-5">{{ __('TRIMMINGS/SPOILAGE') }}</th>
+                                            <th class="border p-2 w-5 max-w-5">{{ __('END') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-primary bg-white">

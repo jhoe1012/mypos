@@ -16,6 +16,7 @@ use App\Exceptions\NotFoundException;
 use App\Http\Controllers\DashboardController;
 use App\Models\ProcurementProduct;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductHistory;
 use App\Models\ProductUnitQuantity;
 use App\Models\Unit;
@@ -627,5 +628,62 @@ class ProductsController extends DashboardController
 
             return $procurementProduct;
         });
+    }
+    // lcabornay
+    public function massUploadProduct(Request $request)
+    {
+
+        if ($request->isMethod('post')) {
+            $file = $request->file('file');
+            $fileContents = file($file->getPathname());
+            $category = ProductCategory::all()->keyBy('name')->toArray();
+            $unit = Unit::all()->keyBy('identifier')->toArray();
+
+            $row = 0;
+            foreach ($fileContents as $line) {
+                $data = str_getcsv($line);
+                if ($row === 0) {
+                    $row++;
+                    continue;
+                }
+                $products = [
+                    "category_id" => $category[$data[0]]['id'] ?? '',
+                    "barcode" =>$data[1],
+                    "sku" => $data[1],
+                    "barcode_type" => "code128",
+                    "searchable" => 1,
+                    "type" => "materialized",
+                    "status" => $data[5],
+                    "stock_management" => "disable",
+                    "description" => null,
+                    "name" => $data[2],
+                    "expires" => 0,
+                    "on_expiration" => "prevent-sales",
+                    "tax_group_id" => 1,
+                    "tax_type" => "inclusive",
+                    "product_type" => "product",
+                ];
+                $products["units"] = [
+                    "accurate_tracking" => 0,
+                    "unit_group" =>  $unit[$data[3]]['group_id'] ?? 0,
+
+                ];
+                $products["units"]["selling_group"][] = [
+                    "unit_id" => $unit[$data[3]]['id'] ?? 0,
+                    "sale_price_edit" => $data[4],
+                    "wholesale_price_edit" => $data[4],
+                    "low_quantity" => $data[6],
+                ];
+                $result = $this->productService->create($products);
+            }
+            return redirect()->back()->with('success', 'Product file imported successfully.');
+        }
+
+        if ($request->isMethod('get')) {
+            return $this->view('pages.dashboard.products.mass-upload-products', [
+                'title' => __('Upload Products'),
+                'description' => __('Upload product template.'),
+            ]);
+        }
     }
 }
